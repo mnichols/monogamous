@@ -66,18 +66,18 @@ const client = stampit()
         //on error, it must need to boot
         connect: function(){
             let spath = this.socketPath()
-            let dupe
+            let _client
             const handleConnection = () => {
                 //send data to previous instance and then shutdown
-                dupe.write(JSON.stringify(this.args), function(){
-                    dupe.end()
+                _client.write(JSON.stringify(this.args), function(){
+                    _client.end()
                     //not an error...
                     process.exit(0)
                 })
             }
-            dupe = net.connect({path:spath},handleConnection)
+            _client = net.connect({path:spath},handleConnection)
             //unable to connect, so boot the app once our server starts
-            dupe.on('error', this.startServer)
+            _client.on('error', this.startServer)
         }
 
     })
@@ -98,7 +98,7 @@ const win32 = stampit()
             return false
         }
         , boot () {
-            this.startServer()
+            this.connect()
         }
     })
 
