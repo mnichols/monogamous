@@ -19,7 +19,15 @@ const server = stampit()
     .init(function(){
         let serve
         const handleReboot = (data) => {
-            this.emitter.emit('reboot', this.args)
+            let parsed
+            try {
+                parsed = JSON.parse(data.toString('utf-8'))
+            } catch(err) {
+                if(!(err instanceof SyntaxError )) {
+                    throw err
+                }
+            }
+            this.emitter.emit('reboot', parsed)
         }
         const handleConnection = (conn) => {
             conn.on('data', handleReboot)
@@ -29,6 +37,9 @@ const server = stampit()
         }
         const handleListening = () => {
             this.emitter.emit('boot', this.args)
+        }
+        const handleClose = () => {
+            this.emitter.emit('end')
         }
 
         const start = () => {
@@ -41,8 +52,12 @@ const server = stampit()
             serve.listen(this.socketPath())
             serve.on('listening', handleListening)
             serve.on('error', handleError)
+            serve.on('close', handleClose)
         }
         this.startServer = start
+        this.end = function(){
+            return serve.close()
+        }
     })
 
 const client = stampit()
@@ -54,7 +69,7 @@ const client = stampit()
             let dupe
             const handleConnection = () => {
                 //send data to previous instance and then shutdown
-                dupe.write(JSON.stringify(process.argv), function(){
+                dupe.write(JSON.stringify(this.args), function(){
                     dupe.end()
                     //not an error...
                     process.exit(0)
@@ -138,6 +153,7 @@ export default stampit()
         }
         //compose event emitter to workaround stampit undefined return
         let emitter = this.emitter = new EventEmitter
+        let platform
         this.on = emitter.on.bind(emitter)
         this.once = emitter.once.bind(emitter)
         this.removeListener = emitter.removeListener.bind(emitter)
@@ -149,14 +165,9 @@ export default stampit()
          * based on state of app (running/not)
          * */
         this.boot = function(bootArgs) {
-            let platform, argv = {}
-
-            //collect all our arguments
-            Object.assign(argv, minimist(process.argv.slice(2)))
-            for(let arg of args) {
-                Object.assign(argv, arg || {})
-            }
-            Object.assign(argv, bootArgs || {})
+            args.push(minimist(process.argv.slice(2)))
+            args.push(bootArgs)
+            let argv = Object.assign({}, ...args)
             if(process.platform === 'win32') {
                 platform = win32({
                     sock: this.sock
@@ -176,5 +187,12 @@ export default stampit()
             // boot it!
             platform.boot()
         }.bind(this)
+
+        this.end = function() {
+            if(platform) {
+                return platform.end()
+            }
+            this.emit('end')
+        }
     })
 

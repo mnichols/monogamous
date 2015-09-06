@@ -47,10 +47,12 @@ app.on('ready', booter.boot.bind(booter))
 
 ## Events
 
-- `boot` : raised if an instance is not running. Your app may start up pristine here
-- `reboot` : another instance was attempted. 
+- `boot`   : raised if an instance is not running. Your app may start up pristine here
+- `reboot` : another instance was attempted.
+- `end`    : a call to `end()` shutdown the instance server
 
-All events receive an merged arguments object merging the following inputs:
+`boot` and `reboot` events receive an merged arguments object merging the following inputs,
+in order of precedence:
 
 - args passed to monogamous creation; eg `monogamous({ sock: 'foo'}, {these:'arepassedthru'})`
 - process argv , hashed (using [minimist](https://www.npmjs.com/package/minimist))
@@ -59,4 +61,16 @@ All events receive an merged arguments object merging the following inputs:
 
 ## API
 
-- `boot([args])` {Function} tries to connect to `sock`;failure to connect means an instance is running
+**Monogamous Factory**
+
+```js
+//only the 'sock' property is required to name your socket
+let booter = monogamous({ sock: 'keepitsimple' }, [other args...])
+
+```
+
+**Instance Methods**
+
+- `boot([args])` : {Function} tries to connect to `sock`;failure to connect means an instance is running
+- `end()`        : {Function} closes socket server
+
