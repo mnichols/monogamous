@@ -1,6 +1,10 @@
 # Test against this version of Node.js
 environment:
-  nodejs_version: "3.2.0"
+  matrix:
+  # io.js
+  - nodejs_version: "3.2.0"
+  # node.js
+  - nodejs_version: "0.12.7"
 
 # Install scripts. (runs after repo cloning)
 install:
@@ -18,5 +22,6 @@ test_script:
   - npm test
 
 # Don't actually build (off).
-build: on
+# Otherwise MSBUILD gets involved and that is always bad.
+build: off
 
