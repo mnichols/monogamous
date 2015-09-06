@@ -1,0 +1,39 @@
+{
+  "name": "monogamous",
+  "version": "1.0.0",
+  "description": "boot single-instance application",
+  "main": "./dist/monogamous.js",
+  "scripts": {
+    "clean": "rimraf dist/* && mkdir dist || true",
+    "test": "babel-tape-runner ./tests/**/*-test.js | faucet",
+    "build": "npm run clean && babel src --out-dir dist",
+    "prepublish": "npm run build && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mnichols/monogamous"
+  },
+  "keywords": [
+    "single",
+    "instance",
+    "electron",
+    "flatulence"
+  ],
+  "author": "Mike Nichols <nichols.mike.s@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mnichols/monogamous/issues"
+  },
+  "homepage": "https://github.com/mnichols/monogamous",
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-tape-runner": "^1.2.0",
+    "faucet": "0.0.1",
+    "rimraf": "^2.4.3",
+    "tape": "^4.2.0"
+  },
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "stampit": "^2.1.0"
+  }
+}
