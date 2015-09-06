@@ -2,8 +2,8 @@
 
 require('babel/register')
 var monogamous = require('../src/monogamous')
-let name = process.argv[2]
-let booter = monogamous({ sock: 'test'},{ hee: 'haw'})
+var name = process.argv[2]
+var booter = monogamous({ sock: 'test'},{ hee: 'haw'})
 booter.on('end',function(e){
     process.send({ event: 'end', args: e})
 })
