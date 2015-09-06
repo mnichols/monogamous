@@ -1,6 +1,6 @@
 {
   "name": "monogamous",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "boot single-instance application",
   "main": "./dist/monogamous.js",
   "scripts": {
