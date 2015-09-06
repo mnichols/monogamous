@@ -2,8 +2,8 @@
 
 > Only one instance of an app at a time.
 
-[![Build Status (travis)](https://travis-ci.org/mnichols/monogamous.svg?branch=master)](https://travis-ci.org/mnichols/monogamous)
-[![Build Status (appveyor)](https://ci.appveyor.com/api/projects/status/github/mnichols/monogamous?branch=master&svg=true)]
+[![Build Status: Linux](https://travis-ci.org/mnichols/monogamous.svg?branch=master)](https://travis-ci.org/mnichols/monogamous)
+[![Build Status: Windows](https://ci.appveyor.com/api/projects/status/14ud4t906nm8earn/branch/master?svg=true)](https://ci.appveyor.com/project/MikeNichols/monogamous/branch/master)
 
 ## Install
 
