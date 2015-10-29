@@ -9,6 +9,10 @@
 
 `npm install monogamous`
 
+**NOTE**: If you are using this for Electron, you should know that this feature
+was added as an option. See [here](https://github.com/atom/electron/blob/v0.34.1/docs/api/app.md#appmakesingleinstancecallback)
+and [here](https://github.com/atom/electron/releases/tag/v0.34.1).
+
 ## Usage (using Electron as an example)
 
 #### Decorating main process entrypoint
