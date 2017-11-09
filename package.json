@@ -33,7 +33,9 @@
     "tape": "^4.2.0"
   },
   "dependencies": {
-    "minimist": "^1.2.0",
-    "stampit": "^2.1.0"
+    "@stamp/arg-over-prop": "^1.0.1",
+    "@stamp/eventemittable": "^1.0.1",
+    "@stamp/it": "^1.0.1",
+    "minimist": "^1.2.0"
   }
 }
