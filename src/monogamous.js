@@ -1,17 +1,20 @@
 'use strict';
 
 import os from 'os'
-import {EventEmitter} from 'events'
 import path from 'path'
 import fs from 'fs'
 import net from 'net'
 import minimist from 'minimist'
-import stampit from 'stampit'
+import stampit from '@stamp/it'
+import EventEmittable from '@stamp/eventemittable'
+import ArgOverProp from '@stamp/arg-over-prop'
+
+const platformProps = ArgOverProp.argOverProp('sock', 'emitter', 'force', 'args')
 
 /**
  * handles duplicate instance attempts
  * */
-const server = stampit()
+const server = stampit(platformProps)
     .props({
         force: false
         , emitter: undefined
@@ -84,7 +87,7 @@ const client = stampit()
 
 
 //boot strategy for windows
-const win32 = stampit()
+const win32 = stampit(platformProps)
     .props({
         force: false
     })
@@ -103,7 +106,7 @@ const win32 = stampit()
     })
 
 //boot strategy for everyone else
-const defaultPlatform = stampit()
+const defaultPlatform = stampit(platformProps)
     .props({
         force: false
     })
@@ -140,45 +143,40 @@ const defaultPlatform = stampit()
         }
     })
 
-export default stampit()
+export default stampit(EventEmittable, platformProps)
     .props({
         //the name of the app to name the socket/pipe
         sock: undefined
         //force instance to start
         , force: false
     })
-    .init(function({ args}){
+    .init(function(_, { args}){
         if(!this.sock) {
             throw new Error('`sock` is required')
         }
         //compose event emitter to workaround stampit undefined return
-        let emitter = this.emitter = new EventEmitter
         let platform
-        this.on = emitter.on.bind(emitter)
-        this.once = emitter.once.bind(emitter)
-        this.removeListener = emitter.removeListener.bind(emitter)
-        this.removeAllListeners = emitter.removeAllListeners.bind(emitter)
-        this.emit = emitter.emit.bind(emitter)
 
         /**
          * call this to emit proper events
          * based on state of app (running/not)
          * */
         this.boot = function(bootArgs) {
+            args.shift();
             args.push(minimist(process.argv.slice(2)))
             args.push(bootArgs)
             let argv = Object.assign({}, ...args)
             if(process.platform === 'win32') {
                 platform = win32({
                     sock: this.sock
-                    , emitter: emitter
+                    , emitter: this
                     , force: this.force
                     , args: argv
                 })
             } else {
                 platform = defaultPlatform({
                     sock: this.sock
-                    , emitter: emitter
+                    , emitter: this
                     , force: this.force
                     , args: argv
                 })
